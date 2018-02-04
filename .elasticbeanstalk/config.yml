@@ -1,0 +1,22 @@
+branch-defaults:
+  master:
+    environment: sentry
+    group_suffix: null
+deploy:
+  artifact: dist/sentry.zip
+environment-defaults:
+  sentry:
+    branch: null
+    repository: null
+global:
+  application_name: sentry
+  default_platform: arn:aws:elasticbeanstalk:eu-west-2::platform/Multi-container Docker
+    running on 64bit Amazon Linux/2.8.4
+  default_region: eu-west-2
+  include_git_submodules: true
+  instance_profile: t2.large
+  platform_name: null
+  platform_version: null
+  profile: eb-cli
+  sc: git
+  workspace_type: Application

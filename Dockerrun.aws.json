@@ -1,0 +1,261 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "environment": [
+        {
+          "name": "SENTRY_SECRET_KEY",
+          "value": "changeme"
+        }
+      ],
+      "command": [
+        "run",
+        "cron"
+      ],
+      "essential": true,
+      "links": [
+        "redis",
+        "postgres",
+        "memcached",
+        "smtp"
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "image": "sentry:8.22-onbuild",
+      "memory": 256,
+      "name": "cron"
+    },
+    {
+      "essential": true,
+      "image": "memcached:1.4",
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "memory": 256,
+      "name": "memcached"
+    },
+    {
+      "essential": true,
+      "image": "postgres:9.5",
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/postgresql/data",
+          "sourceVolume": "_DataPostgres"
+        }
+      ],
+      "memoryReservation": 1028,
+      "name": "postgres"
+    },
+    {
+      "essential": true,
+      "image": "redis:3.2-alpine",
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "memoryReservation": 1028,
+      "name": "redis"
+    },
+    {
+      "essential": true,
+      "image": "tianon/exim4",
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "memory": 256,
+      "name": "smtp"
+    },
+    {
+      "environment": [
+        {
+          "name": "SENTRY_SECRET_KEY",
+          "value": "changeme"
+        },
+        {
+          "name": "SENTRY_MEMCACHED_HOST",
+          "value": "memcached"
+        },
+        {
+          "name": "SENTRY_REDIS_HOST",
+          "value": "redis"
+        },
+        {
+          "name": "SENTRY_POSTGRES_HOST",
+          "value": "postgres"
+        },
+        {
+          "name": "SENTRY_EMAIL_HOST",
+          "value": "smtp"
+        }
+      ],
+      "essential": true,
+      "image": "sentry:8.22-onbuild",
+      "links": [
+        "redis",
+        "postgres",
+        "memcached",
+        "smtp"
+      ],
+      "command": [
+        "run",
+        "web"
+      ],
+      "portMappings": [
+        {
+          "protocol": "tcp",
+          "containerPort": 9000,
+          "hostPort": 9000
+        }
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "memory": 1028,
+      "name": "web"
+    },
+    {
+      "environment": [
+        {
+          "name": "SENTRY_SECRET_KEY",
+          "value": "changeme"
+        }
+      ],
+      "command": [
+        "run",
+        "worker"
+      ],
+      "essential": true,
+      "image": "sentry:8.22-onbuild",
+      "links": [
+        "redis",
+        "postgres",
+        "memcached",
+        "smtp"
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "memory": 256,
+      "name": "worker1"
+    },
+    {
+      "environment": [
+        {
+          "name": "SENTRY_SECRET_KEY",
+          "value": "changeme"
+        }
+      ],
+      "command": [
+        "run",
+        "worker"
+      ],
+      "essential": true,
+      "image": "sentry:8.22-onbuild",
+      "links": [
+        "redis",
+        "postgres",
+        "memcached",
+        "smtp"
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "memory": 256,
+      "name": "worker2"
+    },
+    {
+      "environment": [
+        {
+          "name": "SENTRY_SECRET_KEY",
+          "value": "changeme"
+        }
+      ],
+      "command": [
+        "run",
+        "worker"
+      ],
+      "essential": true,
+      "image": "sentry:8.22-onbuild",
+      "links": [
+        "redis",
+        "postgres",
+        "memcached",
+        "smtp"
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/sentry/files",
+          "sourceVolume": "_DataSentry"
+        }
+      ],
+      "memory": 256,
+      "name": "worker3"
+    },
+    {
+      "name": "nginx",
+      "image": "nginx",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "protocol": "tcp",
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ],
+      "links": [
+        "web"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "_NginxProxyConf",
+          "containerPath": "/etc/nginx/conf.d",
+          "readOnly": true
+        }
+      ]
+    }
+  ],
+  "volumes": [
+    {
+      "host": {
+        "sourcePath": "/var/app/current/data/sentry"
+      },
+      "name": "_DataSentry"
+    },
+    {
+      "host": {
+        "sourcePath": "/var/app/data/postgres"
+      },
+      "name": "_DataPostgres"
+    },
+    {
+      "name": "_NginxProxyConf",
+      "host": {
+        "sourcePath": "/var/app/current/proxy/conf.d"
+      }
+    }
+  ],
+  "networkMode": "bridge",
+  "family": "application-stack"
+}

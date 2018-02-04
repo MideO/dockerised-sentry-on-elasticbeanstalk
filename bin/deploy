@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+mkdir -p dist
+zip dist/sentry.zip -r *
+eb deploy sentry
