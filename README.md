@@ -1,5 +1,5 @@
 # dockerised-sentry-on-elasticbeanstalk
-[Sentry](https://sentry.io/) currently deployed [here](http://sentry.fus4jjjt8w.eu-west-2.elasticbeanstalk.com/sentry/) 
+[Sentry](https://sentry.io/) 
 
 Dockerised Sentry onpremise with AWS elasticbeanstalk deployment configured and circleCi continuous deployment
 
